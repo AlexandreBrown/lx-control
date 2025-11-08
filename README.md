@@ -1,11 +1,10 @@
 <p align="center">
-<img src="./assets/images/dtlogo.png" alt="Duckietown Logo" width="50%">
+<a href="https://duckietown.com"><img src="../assets/images/dtlogo.png" alt="Duckietown Logo" width="50%"></a>
 </p>
 
 # **Learning Experience (LX): Control**
 
 # About these activities
-
 
 In this learning experience, you will use the model that we built in the 
 [kinematics and modeling](https://github.com/duckietown/lx-kinematics-odometry)
@@ -15,9 +14,11 @@ follow a specified set of actions based on our knowledge of how it moves.
 This learning experience is provided by the Duckietown team and can be run on Duckiebots. Visit us at the 
 [Duckietown Website](https://www.duckietown.com) for more learning materials, documentation, and demos.
 
-For guided setup instructions, lecture content, and more related to this LX, see [our Self-Driving Cars with Duckietown MOOC on EdX](https://learning.edx.org/course/course-v1:ETHx+DT-01x+3T2022/home).
+For guided setup instructions, lecture content, and more related to this LX, see [our Self-Driving Cars with Duckietown MOOC on EdX](https://duckietown.com/mooc).
 
 # Instructions
+
+Find the most up-to-date instructions on [how to run LXs on the Duckietown manual](https://docs.duckietown.com/ente/duckietown-manual/60-learning-experiences/lx-setup-pid-control.html). 
 
 **NOTE:** All commands below are intended to be executed from the root directory of this exercise (i.e., the directory containing this README).
 
