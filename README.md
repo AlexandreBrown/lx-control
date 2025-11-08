@@ -1,5 +1,5 @@
 <p align="center">
-<a href="https://duckietown.com"><img src="../assets/images/dtlogo.png" alt="Duckietown Logo" width="50%"></a>
+<a href="https://duckietown.com"><img src="/assets/images/dtlogo.png" alt="Duckietown Logo" width="50%"></a>
 </p>
 
 # **Learning Experience (LX): Control**
