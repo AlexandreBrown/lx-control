@@ -41,22 +41,20 @@ class PIDController():
         # as well as self_prev_int_heading to track the integral term
         # self.prev_e_heading the previous error. But note that you
         # should be the one to update them also.
+        e_heading = theta_ref - theta_curr
+        
+        e_int = self.prev_int_heading + e_heading * delta_t
+        
+        e_der = (e_heading - self.prev_e_heading) / delta_t
+        
+        omega = self.kp * e_heading + \
+                self.ki * e_int + \
+                self.kd * e_der
+        
+        self.prev_e_heading = e_heading
+        self.prev_int_heading = e_int
 
-        v = v_ref
-        e = theta_ref - theta_curr
-
-        proportional_term = e
-        integral_term = self.prev_int_heading + e * delta_t
-        derivative_term = (e - self.prev_e_heading) / delta_t
-        
-        omega = self.kp * proportional_term + \
-                self.ki * integral_term + \
-                self.kd * derivative_term
-        
-        self.prev_e_heading = e
-        self.prev_int_heading = integral_term
-        
-        return v, omega
+        return v_ref, omega
 
     def OffsetControl(self,
                       v_ref: float,
@@ -83,10 +81,20 @@ class PIDController():
         # as well as self_prev_int_offset to track the integral term
         # self.prev_e_offset the previous error. But note that you
         # should be the one to update them also.
-
-        omega = np.random.uniform(-8.0, 8.0)
-        v = v_ref
-        return v, omega
+        e_offset = y_ref - y_curr
+    
+        e_int = self.prev_int_offset + e_offset * delta_t
+        
+        e_der = (e_offset - self.prev_e_offset) / delta_t
+        
+        omega = self.kp * e_offset + \
+                self.ki * e_int + \
+                self.kd * e_der
+        
+        self.prev_e_offset = e_offset
+        self.prev_int_offset = e_int
+        
+        return v_ref, omega
 
     def SetGains(self, kp: float, ki: float, kd: float) -> None:
         # Set the PID gains
