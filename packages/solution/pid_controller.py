@@ -15,6 +15,10 @@ class PIDController():
         self.kp = 0.0
         self.ki = 0.0
         self.kd = 0.0
+    
+    def _wrap_angle(self, angle: float) -> float:
+        """wrap an angle to [-pi, pi]"""
+        return (angle + np.pi) % (2 * np.pi) - np.pi
 
     def HeadingControl(self,
                        v_ref: float,
@@ -33,26 +37,17 @@ class PIDController():
             v:          linear velocity of the Duckiebot
             omega:      angular velocity of the Duckiebot
         """
+        e_t = self._wrap_angle(theta_ref - theta_curr)
 
-        # TODO: implement a PID controller to track the reference heading
-        # feel free to make use of the global variables:
-        # self.kp, self.ki, and self. kd, which are
-        # set either by the notebook or from noVNC
-        # as well as self_prev_int_heading to track the integral term
-        # self.prev_e_heading the previous error. But note that you
-        # should be the one to update them also.
-        e_heading = theta_ref - theta_curr
+        self.prev_int_heading += np.clip(e_t * delta_t, -0.5, 0.5)
+
+        e_der = (e_t - self.prev_e_heading) / delta_t if delta_t > 0 else 0.0
         
-        e_int = self.prev_int_heading + e_heading * delta_t
+        omega = (self.kp * e_t) + \
+                (self.ki * self.prev_int_heading) + \
+                (self.kd * e_der)
         
-        e_der = (e_heading - self.prev_e_heading) / delta_t
-        
-        omega = self.kp * e_heading + \
-                self.ki * e_int + \
-                self.kd * e_der
-        
-        self.prev_e_heading = e_heading
-        self.prev_int_heading = e_int
+        self.prev_e_heading = e_t
 
         return v_ref, omega
 
@@ -73,27 +68,18 @@ class PIDController():
             v:          linear velocity of the Duckiebot
             omega:      angular velocity of the Duckiebot
         """
+        e_t = y_ref - y_curr
 
-        # TODO: implement a PID controller to track the reference lateral offset
-        # feel free to make use of the global variables:
-        # self.kp, self.ki, and self. kd, which are
-        # set either by the notebook or from noVNC
-        # as well as self_prev_int_offset to track the integral term
-        # self.prev_e_offset the previous error. But note that you
-        # should be the one to update them also.
-        e_offset = y_ref - y_curr
-    
-        e_int = self.prev_int_offset + e_offset * delta_t
+        self.prev_int_offset += e_t * delta_t
         
-        e_der = (e_offset - self.prev_e_offset) / delta_t
+        e_der = (e_t - self.prev_e_offset) / delta_t if delta_t > 0 else 0.0
         
-        omega = self.kp * e_offset + \
-                self.ki * e_int + \
-                self.kd * e_der
+        omega = (self.kp * e_t) + \
+                (self.ki * self.prev_int_offset) + \
+                (self.kd * e_der)
         
-        self.prev_e_offset = e_offset
-        self.prev_int_offset = e_int
-        
+        self.prev_e_offset = e_t
+
         return v_ref, omega
 
     def SetGains(self, kp: float, ki: float, kd: float) -> None:
@@ -101,3 +87,6 @@ class PIDController():
         self.kp = kp
         self.ki = ki
         self.kd = kd
+        # Reset accum
+        self.prev_int_offset = 0
+        self.prev_int_heading = 0
