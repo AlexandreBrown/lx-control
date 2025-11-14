@@ -16,7 +16,6 @@ class PIDController():
         self.ki = 0.0
         self.kd = 0.0
 
-
     def HeadingControl(self,
                        v_ref: float,
                        theta_ref: float,
@@ -44,7 +43,19 @@ class PIDController():
         # should be the one to update them also.
 
         v = v_ref
-        omega = np.random.uniform(-8.0, 8.0)
+        e = theta_ref - theta_curr
+
+        proportional_term = e
+        integral_term = self.prev_int_heading + e * delta_t
+        derivative_term = (e - self.prev_e_heading) / delta_t
+        
+        omega = self.kp * proportional_term + \
+                self.ki * integral_term + \
+                self.kd * derivative_term
+        
+        self.prev_e_heading = e
+        self.prev_int_heading = integral_term
+        
         return v, omega
 
     def OffsetControl(self,
